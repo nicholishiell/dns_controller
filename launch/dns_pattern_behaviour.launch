@@ -3,8 +3,8 @@
 
     <node pkg="zumo_comms_node" type="zumo_comms_node.py" name="zumo_comms_node" output="screen"/>
     <node pkg="compass_node" type="compass_node" name="compass_node" output="screen"/>
-    <!--node pkg="follow_heading" type="follow_heading" name="follow_heading" output="screen"/-->
+    <node pkg="velocity_command_to_twist" type="velocity_command_to_twist" name="velocity_command_to_twist" output="screen"/>
     <node pkg="blob_detector" type="blob_detector" name="blob_detector" output="screen"/>
-    <node pkg="dns_pattern_behaviour" type="dns_pattern_behaviour" name="dns_pattern_behaviour" output="screen"/>
+    <node pkg="dns_controller" type="dns_controller" name="dns_controller" output="screen"/>
 
 </launch>

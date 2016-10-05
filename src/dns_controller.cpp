@@ -9,7 +9,7 @@
 using namespace std;
 
 // Global variables
-float formationNormal = 0.;
+float formationNormal = -45.;
 float avoidanceThreshold = 235.;
 float angularWidthOfZoneC = 25.;
 
@@ -39,11 +39,11 @@ void BlobBearingsCallback(const bupimo_msgs::BlobArray::ConstPtr& msg){
   for(int i = 0; i < nBlobs; i++){
     firstBlob = true;
 
-    float blobBearing = fabs( msg->blobArray[i].bearing);
+    float blobBearing = msg->blobArray[i].bearing;
     float blobX = msg->blobArray[i].x;
     float blobY = msg->blobArray[i].y;
     float blobDistance = sqrt( blobX*blobX + blobY*blobY);
-
+    
     // Check avoidance threshold
     if(blobDistance <= avoidanceThreshold){
       zoneA = true;
@@ -51,10 +51,11 @@ void BlobBearingsCallback(const bupimo_msgs::BlobArray::ConstPtr& msg){
     }
 
     // Now check to see what other zone the blob is in
-    if(blobBearing - formationNormal <= angularWidthOfZoneC){
+    float diff = fabs(blobBearing - formationNormal);
+    if(diff <= angularWidthOfZoneC){
       zoneC = true;
     }
-    else if(blobBearing - formationNormal <= 90.){
+    else if(diff <= 90.){
       zoneB = true;
     }
     else{
@@ -93,7 +94,7 @@ int main(int argc, char **argv){
   ros::Subscriber blobBearing_Sub = n.subscribe("blobsGlobal", 1000, BlobBearingsCallback);  
   ros::Publisher command_pub = n.advertise<bupimo_msgs::VelocityCommand>("dns_command", 1000);
   
-  ros::Rate loop_rate(50);
+  ros::Rate loop_rate(15);
 
   while (ros::ok()){
 
@@ -106,33 +107,39 @@ int main(int argc, char **argv){
     }
     else{
       int sensorState = CalculateSensorState();
-
+      printf("SensorState = %d\n", sensorState);
       // Avoidance
       if( sensorState % 2 != 0){
-	heading = avoidBearing + 90.;
-	linearSpeed = 0.25;
+	printf("Avoidance\n");
+	heading = avoidBearing - 90.;
+	linearSpeed = 0.5;
       }
       // Alter course
       else if( sensorState == 4 || sensorState == 6 || sensorState == 12 || sensorState == 14){
-	heading = formationNormal + 90.;
+	printf("Alter Course\n");
+	heading = formationNormal - 90.;
 	linearSpeed = 1.;
       }
       // Backwards
       else if( sensorState == 8){
-	heading = formationNormal - 180.;
+	printf("Back\n");
+	heading = formationNormal;
 	linearSpeed = minDot;
       }
       // Forward
       else if( sensorState == 2 || sensorState == 10){
+	printf("Forward\n");
 	heading = formationNormal;
 	linearSpeed = maxDot;
       }
       // Stop
       else{
+	printf("Stop\n");
 	linearSpeed = 0.;
 	heading = formationNormal;
       }
-      
+      printf("%f\t%f\n", linearSpeed, heading);
+      printf("=====================\n");
     }
 
     // Create a VelocityCommand msg and publish it to the topic
