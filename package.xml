@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+  <name>dns_controller</name>
+  <version>0.0.0</version>
+  <description>Behaviour controller which implements the DNS pattern formation algorithm.</description>
+ 
+  <maintainer email="nicholishiell@gmail.com">Nicholi Shiell</maintainer>
+  <author>Nicholi Shiell</author>
+  <license>FREE</license>
+  <url>http://bots.cs.mun.ca/</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>bupimo_msgs</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <run_depend>roscpp</run_depend>
+</package>

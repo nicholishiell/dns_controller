@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+    <node pkg="zumo_comms_node" type="zumo_comms_node.py" name="zumo_comms_node" output="screen"/>
+    <node pkg="compass_node" type="compass_node" name="compass_node" output="screen"/>
+    <node pkg="follow_heading" type="follow_heading" name="follow_heading" output="screen"/>
+    <node pkg="blob_detector" type="blob_detector" name="blob_detector" output="screen"/>
+    <node pkg="basic_float_publisher" type="basic_float_publisher" name="basic_float_publisher" output="screen"/>
+
+</launch>
