@@ -128,7 +128,7 @@ int main(int argc, char **argv){
       // Avoidance
       if( sensorState % 2 != 0){
 	printf("Avoidance\n");
-	heading = avoidBearing - avoidanceAngle.;
+	heading = avoidBearing - avoidanceAngle;
 	linearSpeed = 0.5;
       }
       // Alter course
