@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -12,6 +13,7 @@ using namespace std;
 float formationNormal = -45.;
 float avoidanceThreshold = 235.;
 float angularWidthOfZoneC = 25.;
+float avoidanceAngle = 135.;
 
 bool firstBlob = false;
 bool commandRecieved = false;
@@ -85,10 +87,25 @@ int CalculateSensorState(){
   return state;
 }
 
+void GetParameters(){
+  fstream paramFile;
+  
+  paramFile.open("/home/pi/ns_catkin_ws/calibData/paramFile.dat");
+  paramFile >> formationNormal;
+  paramFile >> avoidanceThreshold;
+  paramFile >> angularWidthOfZoneC;
+  paramFile >> avoidanceAngle;
+  
+  paramFile.close();  
+}
 
 int main(int argc, char **argv){
-  ros::init(argc, argv, "behaviour_controller");
 
+  // Set all parameters
+  GetParameters();
+
+  ros::init(argc, argv, "behaviour_controller");
+  
   ros::NodeHandle n;
 
   ros::Subscriber blobBearing_Sub = n.subscribe("blobsGlobal", 1000, BlobBearingsCallback);  
@@ -111,7 +128,7 @@ int main(int argc, char **argv){
       // Avoidance
       if( sensorState % 2 != 0){
 	printf("Avoidance\n");
-	heading = avoidBearing - 90.;
+	heading = avoidBearing - avoidanceAngle.;
 	linearSpeed = 0.5;
       }
       // Alter course
@@ -124,7 +141,8 @@ int main(int argc, char **argv){
       else if( sensorState == 8){
 	printf("Back\n");
 	heading = formationNormal;
-	linearSpeed = minDot;
+	//linearSpeed = minDot;
+	linearSpeed = 0.;
       }
       // Forward
       else if( sensorState == 2 || sensorState == 10){
