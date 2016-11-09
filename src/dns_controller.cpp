@@ -6,6 +6,9 @@
 #include <stdio.h>
 #include <string>
 #include <fstream>
+#include <cstdlib>
+#include <iostream>
+#include <ctime>
 
 using namespace std;
 
@@ -99,7 +102,13 @@ void GetParameters(){
   paramFile.close();  
 }
 
+float Random(){
+  return (float)(std::rand()/RAND_MAX) - 0.5;
+}
+
 int main(int argc, char **argv){
+
+  std::srand(std::time(0));
 
   // Set all parameters
   GetParameters();
@@ -128,7 +137,7 @@ int main(int argc, char **argv){
       // Avoidance
       if( sensorState % 2 != 0){
 	printf("Avoidance\n");
-	heading = avoidBearing - avoidanceAngle;
+	heading = avoidBearing - (avoidanceAngle + 30.*Random());
 	linearSpeed = 0.5;
       }
       // Alter course
