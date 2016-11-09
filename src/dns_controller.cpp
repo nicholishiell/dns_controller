@@ -103,7 +103,8 @@ void GetParameters(){
 }
 
 float Random(){
-  return (float)(std::rand()/RAND_MAX) - 0.5;
+  float r =  (float)std::rand()/ (float)RAND_MAX - 0.5;
+  return r;
 }
 
 int main(int argc, char **argv){
@@ -121,7 +122,7 @@ int main(int argc, char **argv){
   ros::Publisher command_pub = n.advertise<bupimo_msgs::VelocityCommand>("dns_command", 1000);
   
   ros::Rate loop_rate(15);
-
+ 
   while (ros::ok()){
 
     float linearSpeed = 0.;
